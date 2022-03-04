@@ -75,7 +75,7 @@ const bloggerSchema = new schema(
     },
     avatar: {
       type: String,
-      default : "images/avatar/defaultImage.png" 
+      default : "defaultImage.png" 
     }
   },
   { timestamps: true }

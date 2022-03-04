@@ -15,14 +15,4 @@ async function deleteBlogger(req, res) {
   }
 }
 
-// async function updateBlogger(req, res) {
-
-// }
-
-// async function updateBloggerProcess(req, res) {
-//   const user = req.session.user._id;
-//   const newUpdate = await blogger.findByIdAndUpdate(user, req.body, {
-//     new: true,
-//   });
-//   req.session.user = newUpdate;
-// }
+module.exports = { adminPanel, deleteBlogger };

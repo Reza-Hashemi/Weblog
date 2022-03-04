@@ -1,6 +1,6 @@
-const admin = require('../database/model/blogger'); 
+const admin = require("../database/model/blogger")
 
-module.exports = function() {
+module.exports =  function() {
     admin.findOne({role: 'admin'}, (err, existAdmin) => {
         if (err) {
             return console.log('Somthing went wrong in find exist admin!')
@@ -10,19 +10,21 @@ module.exports = function() {
             return console.log('Admin already created');
         };
 
-        const ADMIN = new admin({
+        const ADMIN =  new admin({
+            firstname: "admin",
+            lastname: "admin",
             username: "admin",
-            lastName: 'admin',
-            firstName: "admin",
-            gender:"male",
-            password: "12345678",
-            role: 'admin'
+            password: "Admin@1234",
+            phone: "09121231212",
+            gender: "male",
+            role: "admin",
+            city: "tehran"
         });
 
 
         ADMIN.save((err, admin) => {
             if (err) {
-                return console.log('Somthing went wrong in save admin!')
+                return console.log(err)
             };
 
             console.log("Admin created!");

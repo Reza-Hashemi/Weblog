@@ -6,20 +6,26 @@ async function dashboardRender(req, res) {
 }
 
 async function dashboardUpdate(req, res) {
-  const updated = await blogger.findByIdAndUpdate(
-    req.session.user._id,
-    req.body,
-    {
-      new: true,
-    }
-  );
-  req.session.user = updated;
-  const user = req.session.user;
-  res.render('dashboardPage', { user, msg: null });
+  try {
+   
+    const updated = await blogger.findByIdAndUpdate(
+      req.session.user._id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+    req.session.user = updated;
+    const user = req.session.user;
+    return res.render('dashboardPage', { user, msg: null });
+  } catch (error) {
+    res.status(400).send('somthing Wrong');
+  }
 }
 
 async function dashboardRemove(req, res) {
   const user = req.params.id;
+  
   await blogger.findByIdAndDelete(user);
   res.redirect('/signout');
 }

@@ -5,4 +5,4 @@ async function adminAccess(req, res, next) {
     next()
 }
 
-module.exports = adminAccess;
+module.exports = {adminAccess};

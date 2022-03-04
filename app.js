@@ -6,6 +6,7 @@ var logger = require('morgan');
 const session = require('express-session');
 var app = express();
 require('./database/config');
+require('./tools/initAdmin')();
 
 var appRoutes = require('./routes/app');
 

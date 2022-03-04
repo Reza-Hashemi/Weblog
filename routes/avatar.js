@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const {uploadAvatar} = require("../controller/avatar")
+const { avatarController } = require('../controller/avatar');
+const {uploadAvatar} = require("../tools/uploadAvatar")
 
+router.put('/', uploadAvatar.single("avatar"),avatarController);
 
-
-router.put("/", uploadAvatar )
-
-module.exports = router
+module.exports = router;

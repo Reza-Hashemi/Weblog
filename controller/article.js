@@ -1,8 +1,11 @@
 const article = require('../database/model/article');
 
 async function getAllArticles(req, res) {
-  const allArticles = await article.find({}).populate('author');
-  return res.json(allArticles)
+  const allArticles = await article
+    .find({})
+    .populate('author')
+    .sort({ createdAt: -1 });
+  return res.json(allArticles);
 }
 
 async function getBloggerArticle(req, res) {
@@ -14,6 +17,15 @@ async function getBloggerArticle(req, res) {
     res.json(articles);
   } catch (error) {
     return res.status(400).send(error.message);
+  }
+}
+
+async function readMoreBloggerArticle(req, res) {
+  try {
+    const readmore = await article.findById(req.params.id);
+    return res.status(200).json(readmore);
+  } catch (error) {
+    return res.status(400).json(error.message);
   }
 }
 
@@ -29,17 +41,8 @@ async function createArticle(req, res) {
       picture: req.file.filename,
       author: req.session.user._id,
     });
-    console.log(newArticle);
-    await newArticle.save((error) => {
-      if (error) {
-        return res.render('bloggerArticlePage', {
-          articles,
-          msg: error.message,
-        });
-      }
-
-      return res.json(newArticle);
-    });
+    await newArticle.save();
+    return res.redirect("/bloggerarticle")
   } catch (error) {
     return res.status(400).send(error.message);
   }
@@ -59,15 +62,19 @@ async function deleteArticle(req, res) {
 async function updateArticle(req, res) {
   try {
     const id = req.params.id;
-    const updateArticle = await article.findByIdAndUpdate(id, {
-      title: req.body.title,
-      context: req.body.context,
-      picture: req.file.filename,
-      author: req.session.user._id,
-    }, {new: true});
-    return res.json(updateArticle)
+    const updateArticle = await article.findByIdAndUpdate(
+      id,
+      {
+        title: req.body.title,
+        context: req.body.context,
+        picture: req.file.filename,
+        author: req.session.user._id,
+      },
+      { new: true }
+    );
+    return res.json(updateArticle);
   } catch (error) {
-    return res.send(error.message)
+    return res.send(error.message);
   }
 }
 
@@ -77,4 +84,5 @@ module.exports = {
   getBloggerArticle,
   deleteArticle,
   updateArticle,
+  readMoreBloggerArticle,
 };

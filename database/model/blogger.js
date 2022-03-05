@@ -93,4 +93,5 @@ bloggerSchema.pre('save', async function (next) {
   }
 });
 
+
 module.exports = mongoose.model('blogger', bloggerSchema);

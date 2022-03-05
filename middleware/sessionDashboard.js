@@ -4,4 +4,4 @@ async function sessionDashboard(req, res, next) {
   }
   next();
 }
-module.exports = sessionDashboard;
+module.exports = {sessionDashboard};

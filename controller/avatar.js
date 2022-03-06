@@ -1,4 +1,3 @@
-// const avatar = require('../tools/uploadAvatar');
 const blogger = require('../database/model/blogger');
 const fs = require('fs');
 const path = require('path');

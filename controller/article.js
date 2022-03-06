@@ -1,20 +1,26 @@
 const article = require('../database/model/article');
-
+const fs = require('fs');
+const path = require('path');
 async function getAllArticles(req, res) {
-  const allArticles = await article
-    .find({})
-    .populate('author')
-    .sort({ createdAt: -1 });
-  return res.json(allArticles);
+  try {
+    const allArticles = await article
+      .find({})
+      .populate('author')
+      .sort({ createdAt: -1 });
+    return res.status(200).json(allArticles);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
 }
 
 async function getBloggerArticle(req, res) {
   try {
     const articles = await article
       .find({ author: req.session.user._id })
-      .populate('author');
+      .populate('author')
+      .sort({ createdAt: -1 });
 
-    res.json(articles);
+    res.status(200).json(articles);
   } catch (error) {
     return res.status(400).send(error.message);
   }
@@ -42,27 +48,38 @@ async function createArticle(req, res) {
       author: req.session.user._id,
     });
     await newArticle.save();
-    return res.redirect("/bloggerarticle")
+    return res.redirect('/bloggerarticle');
   } catch (error) {
     return res.status(400).send(error.message);
   }
 }
 async function deleteArticle(req, res) {
-  const articleID = req.params.id;
-  await article.findByIdAndDelete(articleID);
-  const articles = await article
-    .find({ author: req.session.user._id })
-    .populate('author');
-  return res.render('bloggerArticlePage', {
-    articles,
-    msg: 'article is delete',
-  });
+  try {
+    const articleID = req.params.id;
+    const findArticleDeleting = await article.findById(articleID);
+    await article.findByIdAndDelete(articleID);
+    fs.unlinkSync(
+      path.join(
+        __dirname,
+        '../public/images/pictures',
+        findArticleDeleting.picture
+      )
+    );
+
+    return res.status(200).redirect('/bloggerarticle');
+  } catch (error) {
+    return res.status(500).json('somthing wrong');
+  }
 }
 
 async function updateArticle(req, res) {
   try {
     const id = req.params.id;
-    const updateArticle = await article.findByIdAndUpdate(
+    const findArticle = await article.findById(id);
+    fs.unlinkSync(
+      path.join(__dirname, '../public/images/pictures', findArticle.picture)
+    );
+    await article.findByIdAndUpdate(
       id,
       {
         title: req.body.title,
@@ -72,7 +89,7 @@ async function updateArticle(req, res) {
       },
       { new: true }
     );
-    return res.json(updateArticle);
+    return res.status(200).redirect("/bloggerarticle")
   } catch (error) {
     return res.send(error.message);
   }

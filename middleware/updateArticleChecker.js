@@ -6,16 +6,16 @@ async function updateArticleChecker(req, res, next) {
     if (!req.body.title) {
       req.body.title = findArticle.title;
     }
-    if(!req.body.context){
-        req.body.context = findArticle.context
+    if (!req.body.context) {
+      req.body.context = findArticle.context;
     }
-    if(!req.file){
-        req.file = findArticle.picture
+    if (!req.file) {
+      req.file = findArticle.picture;
     }
-    next()
   } catch (error) {
-      return res.status(400).json(error.message)
+    return res.status(400).json(error.message);
   }
+  next();
 }
 
 module.exports = { updateArticleChecker };

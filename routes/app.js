@@ -12,14 +12,14 @@ const signin = require('./signin');
 const avatar = require('./avatar');
 const signout = require('./signout');
 const articles = require('./articles');
-const {sessionDashboard} = require('../middleware/sessionDashboard');
+const { sessionDashboard } = require('../middleware/sessionDashboard');
 const sessionSignin = require('../middleware/sessionSignin');
-const {adminAccess} = require("../middleware/adminAccess")
+const { adminAccess } = require('../middleware/adminAccess');
 
 router.use('/', home);
 router.use('/aboute', aboute);
 router.use('/contact', contact);
-router.use('/admin', adminAccess,admin);
+router.use('/admin', adminAccess, admin);
 router.use('/articles', articles);
 router.use('/bloggerarticle', sessionSignin, bloggerArticle);
 router.use('/signup', sessionDashboard, signup);

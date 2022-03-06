@@ -26,7 +26,10 @@ async function updateDashboard(req, res, next) {
     (await blogger.findOne({ username: username })) &&
     req.session.user.username !== username
   ) {
-    return res.render('dashboardPage', { user, msg: 'username is not accepted'});
+    return res.render('dashboardPage', {
+      user,
+      msg: 'username is not accepted',
+    });
   }
   if (
     (await blogger.findOne({ phone: phone })) &&

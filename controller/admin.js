@@ -40,7 +40,7 @@ async function getArticles(req, res) {
   try {
     const articles = await article
       .find({})
-      .populate('author')
+      .populate('author','username avatar ')
       .sort({ createdAt: -1 });
     return res.status(200).json(articles);
   } catch (error) {

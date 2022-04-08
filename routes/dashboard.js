@@ -10,6 +10,7 @@ const {
   resetPasswordProcess,
 } = require('../controller/dashboard');
 
+
 router.get('/', dashboardRender);
 router.put('/', updateDashboard, dashboardUpdate);
 router.delete('/:id', dashboardRemove);

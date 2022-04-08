@@ -5,5 +5,6 @@ const signinCheck = require('../middleware/signinCheck');
 
 router.get('/', signin);
 router.post('/', signinCheck, signinProcess);
+
 // router.route("/").get(signin).post(signinProcess)
 module.exports = router;

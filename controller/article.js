@@ -1,6 +1,10 @@
 const article = require('../database/model/article');
 const fs = require('fs');
 const path = require('path');
+const comment = require("../database/model/comment")
+const uploadArticle = require('../tools/uploadArticle');
+
+
 async function getAllArticles(req, res) {
   try {
     const allArticles = await article
@@ -9,7 +13,7 @@ async function getAllArticles(req, res) {
       .sort({ createdAt: -1 })
       .skip((req.params.id - 1) * 8)
       .limit(8);
-    return res.status(200).json(allArticles);
+    return res.status(200).json(allArticles)
   } catch (error) {
     return res.status(500).json(error.message);
   }
@@ -24,8 +28,8 @@ async function readmore(req, res) {
         visited: findArticle.visited + 1,
       });
     }
-
-    return res.status(200).json(findArticle);
+    const comments = await comment.find({articleID: req.params.id},{detail:1,createdAt:1}).populate("username",'username')
+    return res.status(200).json({findArticle,comments});
   } catch (error) {
     return res.status(400).json(error.message);
   }
@@ -50,13 +54,21 @@ async function readMoreBloggerArticle(req, res) {
     await article.findByIdAndUpdate(req.params.id, {
       visited: readmore.visited + 1,
     });
-    return res.status(200).json(readmore);
+    const comments = await comment.find({articleID: req.params.id},{detail:1,createdAt:1}).populate("username",'username')
+    return res.status(200).json({data:readmore,comments});
   } catch (error) {
     return res.status(400).json(error.message);
   }
 }
 
 async function createArticle(req, res) {
+  if(!req.file){
+    return res.json("please select image")
+  }
+  if(!req.body.title){
+    return res.json("please input title")
+  }
+
   try {
     await article.create({
       title: req.body.title,
@@ -71,9 +83,13 @@ async function createArticle(req, res) {
 }
 async function deleteArticle(req, res) {
   try {
-    const articleID = req.params.id;
-    const findArticleDeleting = await article.findById(articleID);
-    await article.findByIdAndDelete(articleID);
+    
+    const findArticleDeleting = await article.findById(req.params.id);
+    if(req.session.user._id !== findArticleDeleting.author._id.toString()){
+      return res.status(401).json("Access Denied")
+    }
+    await article.findByIdAndDelete(req.params.id);
+    await comment.deleteMany({articleID: findArticleDeleting._id})
     fs.unlinkSync(
       path.join(
         __dirname,

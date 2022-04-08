@@ -1,5 +1,6 @@
 const blogger = require('../database/model/blogger');
 const article = require('../database/model/article');
+const comment = require('../database/model/comment');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const path = require('path');
@@ -35,12 +36,21 @@ async function updateBloggerPassword(req, res) {
     return res.status(500).json(error.message);
   }
 }
+async function removeCommentByAdmin(req,res){
+  try {
+    await comment.findByIdAndDelete(req.params.id)
+    return res.status(200).redirect(`/articles/:1`);
+  } catch (error) {
+    return res.status(500).json("somthing wrong")
+  }
+}
+
 
 async function getArticles(req, res) {
   try {
     const articles = await article
       .find({})
-      .populate('author','username avatar ')
+      .populate('author', 'username avatar ')
       .sort({ createdAt: -1 });
     return res.status(200).json(articles);
   } catch (error) {
@@ -58,9 +68,9 @@ async function readmore(req, res) {
 
 async function deleteArticle(req, res) {
   try {
-    const articleID = req.params.id;
-    const findArticleDeleting = await article.findById(articleID);
-    await article.findByIdAndDelete(articleID);
+    const findArticleDeleting = await article.findById(req.params.id);
+    await article.findByIdAndDelete(req.params.id);
+    await comment.deleteMany({ articleID: findArticleDeleting._id });
     fs.unlinkSync(
       path.join(
         __dirname,
@@ -91,12 +101,37 @@ async function createadmin(req, res) {
   }
 }
 
+async function createArticle(req, res) {
+  if (!req.file) {
+    return res.json('please select image');
+  }
+  if (!req.body.title) {
+    return res.json('please input title');
+  }
+  try {
+    await article.create({
+      title: req.body.title,
+      context: req.body.context,
+      picture: req.file.filename,
+      author: req.session.user._id,
+    });
+    return res.redirect('/articles/:1');
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+  
+
+  
+}
 module.exports = {
   adminPanel,
   deleteBlogger,
   updateBloggerPassword,
   getArticles,
   readmore,
+  removeCommentByAdmin,
   deleteArticle,
-  createadmin
+  createadmin,
+  createArticle,
+  
 };

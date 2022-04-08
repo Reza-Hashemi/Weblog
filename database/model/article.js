@@ -21,7 +21,7 @@ const articleSchema = new schema(
     },
     visited: {
       type: Number,
-      default: 0
+      default: 0,
     },
     author: {
       type: schema.Types.ObjectId,

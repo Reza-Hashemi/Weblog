@@ -5,11 +5,12 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 async function dashboardRender(req, res) {
   const user = req.session.user;
-  res.status(200).json(user);
+  res.status(200).json(user)
 }
 
 async function dashboardUpdate(req, res) {
   try {
+    console.log(req.body);
     const updated = await blogger.findByIdAndUpdate(
       req.session.user._id,
       req.body,
@@ -18,7 +19,6 @@ async function dashboardUpdate(req, res) {
       }
     );
     req.session.user = updated;
-    const user = req.session.user;
     return res.status(200).redirect('/dashboard');
   } catch (error) {
     res.status(400).send('somthing Wrong');

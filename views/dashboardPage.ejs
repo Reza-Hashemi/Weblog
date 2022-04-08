@@ -1,31 +1,179 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dashboard</title>
+    <link rel="stylesheet" href="stylesheets/dashboardStyle.css">
+    <%- include('./common/headCDN.ejs')  %> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-    <%= msg%>
+    <%- include("./common/navbar.ejs")  %> 
     
-        <img src='images/avatar/<%= user.avatar %>'>
-   
-    <form action="/avatar" enctype="multipart/form-data" method="Put">
-        <div class="form-group">
-          <input type="file" class="form-control-file" name="uploaded_file">
-          <input type="submit" value="change avatar" class="btn btn-default">            
+    
+  
+      
+    
+    <div class="container">
+      <%= msg%>
+        <div class="main-body">
+          
+              <div class="row gutters-sm">
+                
+                <div class="col-md-4 mb-3">
+                  
+                  <div class="card">
+                    
+                    <div class="card-body">
+                      <div class="d-flex flex-column align-items-center text-center">
+                        <img src="images/avatar/<%= user.avatar  %> " class="rounded-circle" width="150">
+                        <div class="mt-3">
+                          <h4><%= user.username  %> </h4>
+                          <p class="text-secondary mb-1"><%= user.role  %> </p>
+                          <p class="text-muted font-size-sm"><%= user.city  %> </p>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card mt-3">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe mr-2 icon-inline"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Website</h6>
+                        <span class="text-secondary">https://bootdey.com</span>
+                      </li>
+                      
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-8">
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">نام</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary" id="users" >
+                          <%= user.firstname %> 
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">نام خانوادگی</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary" id="users">
+                          <%= user.lastname %> 
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">نام کاربری</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary" id="users">
+                          <%= user.username  %> 
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3" >
+                          <h6 class="mb-0">تلفن</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary" id="users">
+                          <%= user.phone  %> 
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">شهر</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary" id="users">
+                          <%= user.city  %> 
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">جنسیت</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary" id="users">
+                          <%= user.gender  %> 
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="d-flex ">
+                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">ویرایش</button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModal" role="dialog">
+                          <div class="modal-dialog">
+                          
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">ویرایش پروفایل</h4>
+                              </div>
+                              <div class="modal-body">
+                               <form action="/dashboard/update" method="post">
+                                 <div>
+                                   <label for="firstname">نام </label>
+                                  <input type="text" name="firstname" id="firstname" value="<%= user.firstname  %> ">
+                                 </div>
+                                 <div>
+                                  <label for="lastname">نام خانوادگی</label>
+                                 <input type="text" name="lastname" id="lastname" value="<%= user.lastname %> ">
+                                </div><div>
+                                  <label for="username">نام کاربری</label>
+                                 <input type="text" name="username" id="username" value="<%= user.username  %> ">
+                                </div>
+                                <div>
+                                  <label for="phone">تلفن</label>
+                                 <input type="text" name="phone" id="phone" value="<%= user.phone  %> ">
+                                </div>
+                                <div>
+                                  <label for="firstname">شهر</label>
+                                 <input type="text" name="city" id="city" value="<%= user.city  %> ">
+                                </div>
+                                <div>
+                                  <label for="firstname">جنسیت</label>
+                                 <input type="text" name="gender" id="gender" value="<%= user.gender  %> ">
+                                </div>
+                                <div>
+                                  <label for="firstname">password</label>
+                                 <input type="text" name="password" id="gender" value="<%= user.password  %> ">
+                                </div>
+
+                             
+                                <div class="modal-footer">
+
+                                  <button type="submit" class=" bg-success" >ذخیره</button>
+                                </div>
+                               </form>
+                              </div>
+                              
+                            </div>
+                            
+                          </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+        
+                </div>
+              </div>
+    
+            </div>
         </div>
-      </form>
-    
-    <form action="/dashboard" method="put">
-        <div><label for="">firstname</label><input type="text" name="firstname" placeholder="firstname" value="<%= user.firstname  %> "></div>
-        <div><label for="">lastname</label><input type="text" name="lastname" placeholder="lastname" value="<%= user.lastname  %> "></div>
-        <div><label for="">username</label><input type="text" name="username" placeholder="username" value="<%= user.username  %> "></div>
-        <div><label for="">phone</label><input type="text" name="phone" placeholder="phone" value="<%= user.phone  %> "></div>
-        <div><label for="">city</label><input type="text" name="city" placeholder="city" value="<%= user.city  %> "></div>
-        <div><label for="">gender</label><input type="text" name="gender" placeholder="gender" value="<%= user.gender  %> "></div>
-        <div><input type="submit" value="submit"></div>
-    </form>
+       
+        <script src="javascripts/dashboard.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </body>
 </html>

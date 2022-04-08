@@ -12,19 +12,21 @@ const signin = require('./signin');
 const avatar = require('./avatar');
 const signout = require('./signout');
 const articles = require('./articles');
+const comment = require('./comment')
 const { sessionDashboard } = require('../middleware/sessionDashboard');
-const sessionSignin = require('../middleware/sessionSignin');
+const {sessionSignin, bloggerAccess} = require('../middleware/sessionSignin');
 const { adminAccess } = require('../middleware/adminAccess');
 
 router.use('/', home);
 router.use('/aboute', aboute);
 router.use('/contact', contact);
-router.use('/admin', adminAccess, admin);
+router.use('/admin', sessionSignin,adminAccess, admin);
 router.use('/articles', articles);
+router.use('/comment', sessionSignin,comment)
 router.use('/bloggerarticle', sessionSignin, bloggerArticle);
 router.use('/signup', sessionDashboard, signup);
 router.use('/signin', sessionDashboard, signin);
-router.use('/dashboard', sessionSignin, dashboard);
+router.use('/dashboard', sessionSignin, bloggerAccess, dashboard);
 router.use('/avatar', sessionSignin, avatar);
 router.use('/signout', signout);
 
